@@ -1,4 +1,410 @@
-$test: #fff;
- main {
-   color: $test;
- }
+$blue: #55A7F2;
+$light-blue: #b2e1fa;
+$dark-blue: #2A649A;
+$green: #26a31d;
+$red: #a32221;
+
+body {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333333;
+}
+
+img {
+  width: 100%;
+}
+
+.btn {
+  border: 1px solid $blue;
+  background-color: $blue;
+  border-radius: 2px;
+  padding: 10px 15px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  &:hover {
+    cursor: pointer;
+    background-color: $blue - 10;
+  }
+}
+
+.hidden {
+  visibility: hidden;
+  width: 1px;
+  height: 1px;
+  font-size: 0;
+}
+
+/* ------- Header ------- */
+
+.header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #dfdfdf;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  &__logo {
+    display: block;
+    width: 250px;
+    padding-bottom: 10px;
+  }
+  &__welcome {
+    color: $dark-blue;
+  }
+  &__exit {
+    border: none;
+    color: $blue;
+    background-color: #ffffff;
+    border-bottom: 1px solid $blue;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+/* ------- */
+
+/* ------- main -------*/
+
+.main {
+  padding: 0 20px;
+  display: grid;
+  justify-content: center;
+  grid-column-gap: 20px;
+  grid-template-areas: "cards last-transactions";
+  grid-auto-columns: minmax(280px, auto);
+}
+
+/* ------- */
+
+/* ------- cards ------- */
+
+.cards {
+  grid-area: cards;
+  justify-self: stretch;
+  padding-top: 10px;
+  min-width: 280px;
+  max-width: 400px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "cards-header cards-add"
+                        "cards-list cards-list";
+  &__header {
+    grid-area: cards-header;
+    align-self: center;
+    color: $dark-blue;
+    font-size: 24px;
+  }
+  &__add {
+    grid-area: cards-add;
+    align-self: center;
+    justify-self: end;
+  }
+  &__list {
+    margin-top: 10px;
+    grid-area: cards-list;
+    padding: 20px;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+  }
+  &__item {
+    background-color: #fff;
+    border: 1px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-bottom: 10px;
+    &--select {
+      background-color: $light-blue;
+    }
+    &:hover {
+      cursor: pointer;
+      border-color: $light-blue;
+    }
+  }
+}
+
+/* ------- */
+
+/* ------- card------- */
+
+.card {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-row-gap: 5px;
+  grid-template-areas: "card-name card-status"
+                        "card-number card-balance";
+  &__name {
+    grid-area: card-name;
+    font-size: 16px;
+    color: $dark-blue;
+    margin-right: 5px;
+  }
+  &__status {
+    grid-area: card-status;
+    font-size: 12px;
+    &--active {
+      color: $green;
+    }
+    &--inactive {
+      color: $red;
+    }
+  }
+  &__number {
+    grid-area: card-number;
+  }
+  &__balance {
+    grid-area: card-balance;
+    text-align: right;
+    font-weight: bold;
+  }
+}
+
+/* ------- */
+
+/* ------- last-transactions ------- */
+.last-transactions {
+  padding-top: 10px;
+  grid-area: last-transactions;
+  display: grid;
+  grid-template-areas: "last-transactions__header transfer"
+                        "transactions transactions";
+  &__header {
+    grid-area: last-transactions__header;
+    align-self: center;
+    color: $dark-blue;
+    font-size: 24px;
+  }
+}
+/* ------- */
+
+.transfer {
+  grid-area: transfer;
+  align-self: center;
+  justify-self: end;
+  margin-left: 10px;
+}
+
+.transactions {
+  grid-area: transactions;
+  margin-top: 10px;
+  padding: 20px;
+  border-radius: 3px;
+  background-color: #f5f5f5;
+  &__table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+}
+
+/* ------- transaction ------- */
+
+.transaction {
+  background-color: #ffffff;
+  color: #999;
+  border: 1px solid #eee;
+  border-collapse: collapse;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #fcfcfc;
+  }
+  td {
+    padding: 10px;
+  }
+  &__recipient {
+    color: $dark-blue;
+    padding-right: 10px;
+  }
+  &__amount {
+    text-align: right;
+    min-width: 70px;
+    &--positive {
+      color: $green;
+    }
+    &--negative {
+      color: $red;
+    }
+  }
+
+
+}
+
+/* ------- */
+
+/* ------- pagination ------- */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  &__list {
+    border: 1px solid #eeeeee;
+    border-radius: 3px;
+    display: flex;
+  }
+  &__item {
+    background-color: #ffffff;
+    border-right: 1px solid #eeeeee;
+    &--active {
+      background-color: $light-blue;
+    }
+    &:last-child {
+      border: none;
+    }
+    &--separator {
+      padding: 8px 10px;
+    }
+  }
+  &__link {
+    display: inline-block;
+    padding: 8px 10px;
+    color: $dark-blue;
+    text-decoration: none;
+  }
+}
+
+/* ------- */
+
+ /* ------- add card, add transfer ------- */
+.add-card,
+.add-transfer {
+  display: none;
+  //display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  &__container {
+    background-color: #fff;
+    padding: 20px;
+    margin: -100px 10px 0;
+  }
+  &__header {
+    color: $dark-blue;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  &__close {
+    margin-left: 20px;
+    border: none;
+    color: #55A7F2;
+    background-color: #ffffff;
+    border-bottom: 1px solid #55A7F2;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  &__input {
+    border: none;
+    border-bottom: 2px solid $blue;
+    font-size: 14px;
+    padding: 10px;
+    width: calc(100% - 20px);
+    margin-bottom: 20px;
+  }
+  &__submit {
+    float: right;
+  }
+}
+
+.add-transfer {
+  &__select {
+    margin-bottom: 15px;
+  }
+}
+
+.select {
+  &__label {
+    font-size: 14px;
+    color: $dark-blue;
+  }
+  &__list {
+    border: 1px solid #eeeeee;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+}
+
+/* ------- */
+
+/* login */
+.login,
+.registration {
+  display: flex;
+  justify-content: center;
+  &__container  {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 3px;
+    background-color: #f5f5f5;
+  }
+  &__header {
+    font-size: 24px;
+    color: $dark-blue;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  &__item {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  &__input {
+    padding: 8px;
+    min-width: 200px;
+    font-size: 14px;
+  }
+  &__submit {
+    margin-top: 10px;
+    float: right;
+  }
+  &__registration, &__login {
+    font-size: 14px;
+    text-decoration: none;
+    color: #55A7F2;
+    border-bottom: 1px solid #55A7F2;
+    font-family: Arial, sans-serif;
+    margin-left: 20px;
+  }
+}
+/* */
+
+@media screen and (max-width: 650px){
+  .last-transactions__header,
+  .cards__header,
+  .add-card__header,
+  .registration__header {
+    font-size: 16px;
+  }
+  .main {
+    grid-template-areas: "cards"
+    "last-transactions";
+    padding: 10px 5px;
+  }
+  .cards {
+    max-width: 100%;
+  }
+  .transactions, .cards__list {
+    padding: 5px;
+    min-width: 0;
+  }
+  .btn {
+    padding: 7px;
+    font-size: 14px;
+  }
+}
