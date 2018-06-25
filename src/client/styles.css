@@ -351,6 +351,10 @@ img {
   margin-left: 20px; }
 
 /* */
+@media screen and (max-width: 700px) {
+  .transactions, .cards__list {
+    padding: 5px; } }
+
 @media screen and (max-width: 650px) {
   .last-transactions__header,
   .cards__header,
