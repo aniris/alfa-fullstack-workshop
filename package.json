@@ -1,0 +1,26 @@
+{
+  "name": "alfa-fullstack-workshop",
+  "version": "1.0.0",
+  "description": "Репозиторий для студенческой практики по .NET",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --watch ./src/client --output ./src/client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aniris/alfa-fullstack-workshop.git"
+  },
+  "author": "aniris",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aniris/alfa-fullstack-workshop/issues"
+  },
+  "homepage": "https://github.com/aniris/alfa-fullstack-workshop#readme",
+  "devDependencies": {
+    "node-sass": "^4.9.0"
+  }
+}
