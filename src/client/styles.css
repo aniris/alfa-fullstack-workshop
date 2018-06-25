@@ -20,6 +20,10 @@ img {
   cursor: pointer;
   background-color: #4b9de8; }
 
+.header-block {
+  color: #2A649A;
+  font-size: 24px; }
+
 .hidden {
   visibility: hidden;
   width: 1px;
@@ -78,9 +82,7 @@ img {
 
 .cards__header {
   grid-area: cards-header;
-  align-self: center;
-  color: #2A649A;
-  font-size: 24px; }
+  align-self: center; }
 
 .cards__add {
   grid-area: cards-add;
@@ -150,9 +152,7 @@ img {
 
 .last-transactions__header {
   grid-area: last-transactions__header;
-  align-self: center;
-  color: #2A649A;
-  font-size: 24px; }
+  align-self: center; }
 
 /* ------- */
 .transfer {
@@ -254,8 +254,6 @@ img {
 
 .add-card__header,
 .add-transfer__header {
-  color: #2A649A;
-  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -316,8 +314,6 @@ img {
 
 .login__header,
 .registration__header {
-  font-size: 24px;
-  color: #2A649A;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -356,10 +352,7 @@ img {
     padding: 5px; } }
 
 @media screen and (max-width: 650px) {
-  .last-transactions__header,
-  .cards__header,
-  .add-card__header,
-  .registration__header {
+  .header-block {
     font-size: 16px; }
   .main {
     grid-template-areas: "cards" "last-transactions";

@@ -29,6 +29,11 @@ img {
   }
 }
 
+.header-block {
+  color: $dark-blue;
+  font-size: 24px;
+}
+
 .hidden {
   visibility: hidden;
   width: 1px;
@@ -96,8 +101,6 @@ img {
   &__header {
     grid-area: cards-header;
     align-self: center;
-    color: $dark-blue;
-    font-size: 24px;
   }
   &__add {
     grid-area: cards-add;
@@ -175,8 +178,6 @@ img {
   &__header {
     grid-area: last-transactions__header;
     align-self: center;
-    color: $dark-blue;
-    font-size: 24px;
   }
 }
 /* ------- */
@@ -288,8 +289,6 @@ img {
     margin: -100px 10px 0;
   }
   &__header {
-    color: $dark-blue;
-    font-size: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -352,8 +351,6 @@ img {
     background-color: #f5f5f5;
   }
   &__header {
-    font-size: 24px;
-    color: $dark-blue;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -391,10 +388,7 @@ img {
 }
 
 @media screen and (max-width: 650px){
-  .last-transactions__header,
-  .cards__header,
-  .add-card__header,
-  .registration__header {
+  .header-block {
     font-size: 16px;
   }
   .main {
