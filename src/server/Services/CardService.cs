@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+
 namespace Server.Services
 {
     /// <summary>
@@ -10,7 +13,42 @@ namespace Server.Services
         /// </summary>
         /// <param name="number">card number in any format</param>
         /// <returns>Return <see langword="true"/> if card is valid</returns>
-        public bool CheckCardNumber(string number) => throw new System.NotImplementedException();
+        public bool CheckCardNumber(string number)
+        {
+            const int length = 16;
+            
+            if (string.IsNullOrEmpty(number))
+            {
+                return false;
+            }
+            number = number.Replace(" ", "");
+            
+            if (number.Length != length)
+            {
+                return false;
+            }
+
+            if (number.Any(o => !char.IsDigit(o)))
+            {
+                return false;
+            }
+            
+            int numeral,
+                sum = 0;
+
+            for (var i = 0; i < length; i++)
+            {
+                numeral = number[i] - '0';
+                if (i % 2 == 0)
+                {
+                    numeral *= 2;
+                    numeral = (numeral > 9) ? numeral - 9 : numeral;
+                }
+                sum += numeral;
+            }
+            
+            return sum % 10 == 0;
+        }
 
         /// <summary>
         /// Check card number by Alfabank emmiter property
