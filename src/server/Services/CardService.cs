@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Server.Services
 {
@@ -8,6 +10,14 @@ namespace Server.Services
     /// </summary>
     public class CardService : ICardService
     {
+        private enum TypeCard
+        {
+            Mastercard = 1,
+            Visa,
+            Maestro,
+            VisaElectron
+        }
+        
         /// <summary>
         /// Check card number by Lun algoritm
         /// </summary>
@@ -64,7 +74,27 @@ namespace Server.Services
         /// Extract card number
         /// </summary>
         /// <param name="number">card number in any format</param>
-        /// <returns>Return 0 is card is invalid, 1 if card is mastercard, 2 is visa, 3 is maestro, 4 is visa electon</returns>
-        public int CardTypeExtract(string number) => throw new System.NotImplementedException();
+        /// <returns>Return 0 is card is invalid, 1 if card is mastercard, 2 is visa, 3 is maestro, 4 is visa electron</returns>
+        public int CardTypeExtract(string number)
+        {
+            Match m;
+            Dictionary<TypeCard, string> typesCard = new Dictionary<TypeCard, string>()
+            {
+                { TypeCard.Mastercard, @"^(5[1-5]|222[1-9]|2[3-6]|27[0-1]|2720)\d*" },
+                { TypeCard.VisaElectron, @"^(4026|417500|4508|4844|491(3|7))\d*" },
+                { TypeCard.Visa, @"^4\d*" },
+                { TypeCard.Maestro, @"^(5[0678]|6304|6390|6054|6271|67)\d*" }
+            };
+
+            foreach (KeyValuePair<TypeCard, string> type in typesCard)
+            {
+                m = Regex.Match(number, type.Value);
+                if (m.Success) {
+                    return (int)type.Key;
+                }
+            }
+
+            return 0;
+        }
     }
 }
