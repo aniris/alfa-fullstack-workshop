@@ -15,15 +15,20 @@ namespace Server.Services
         /// <returns>Return <see langword="true"/> if card is valid</returns>
         public bool CheckCardNumber(string number)
         {
-            const int length = 16;
+            const int minLength = 12,
+                maxLenght = 19;
             
             if (string.IsNullOrEmpty(number))
             {
                 return false;
             }
             number = number.Replace(" ", "");
+
+            int length = number.Length,
+                numeral,
+                sum = 0;
             
-            if (number.Length != length)
+            if (length <= minLength || length >= maxLenght)
             {
                 return false;
             }
@@ -33,8 +38,6 @@ namespace Server.Services
                 return false;
             }
             
-            int numeral,
-                sum = 0;
 
             for (var i = 0; i < length; i++)
             {
