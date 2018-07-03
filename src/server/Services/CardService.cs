@@ -75,6 +75,26 @@ namespace Server.Services
             }
         }
 
+        public bool CheckCardName(string cardName)
+        {
+            if (string.IsNullOrWhiteSpace(cardName))
+            {
+                return false;
+            }
+            
+            const int maxLengthCardName = 10,
+                minLengthCardNAme = 5;
+
+            cardName = cardName.Replace(" ", "");
+
+            if (cardName.Length < minLengthCardNAme || cardName.Length > maxLengthCardName)
+            {
+                return false;
+            }
+            
+            return true;
+        }
+
         /// <summary>
         /// Check card number by Alfabank emmiter property
         /// </summary>
@@ -86,6 +106,19 @@ namespace Server.Services
 
             return Constants.AlfaBINs.Any(x => number.StartsWith(x));
         }
+        
+        public CurrencyTypes getRandomCurrencyTypes()
+        {
+            Random rnd = new Random();
+            int countEnumValues = Enum.GetNames(typeof(CurrencyTypes)).Length;
+            return (CurrencyTypes) rnd.Next(0, countEnumValues + 1);
+        }
+        
+        public bool CheckExistCard(string cardNumber) => throw new System.NotImplementedException();
+        
+        public bool CheckCardActive(string cardNumber) => throw new System.NotImplementedException();
+        
+        public bool CheckCardBalance(string cardNumber, decimal operationAmount) => throw new System.NotImplementedException();
 
         #endregion
 
