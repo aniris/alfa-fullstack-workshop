@@ -91,7 +91,7 @@ namespace Server.Models
             if (cardType == CardType.UNKNOWN)
                 throw new UserDataException("Wrong type card", cardType.ToString());
 
-            if (Cards.Any(x => x.CardName == shortCardName))
+            if (!String.IsNullOrWhiteSpace(shortCardName) && Cards.Any(x => x.CardName == shortCardName))
                 throw new UserDataException("Card is already exist", shortCardName);
 
             var newCard = new Card(blService.GenerateNewCardNumber(cardType),

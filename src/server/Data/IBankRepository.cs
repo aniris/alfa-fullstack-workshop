@@ -24,7 +24,7 @@ namespace Server.Data
         /// OpenNewCard
         /// </summary>
         /// <param name="cardType">type of the cards</param>
-        void OpenNewCard(CardType cardType);
+        Card OpenNewCard(string cardName, Currency currency, CardType cardType);
 
         /// <summary>
         /// Transfer money
@@ -32,15 +32,14 @@ namespace Server.Data
         /// <param name="sum">sum of operation</param>
         /// <param name="from">card number</param>
         /// <param name="to">card number</param>
-        void TransferMoney(decimal sum, string from, string to);
+        Transaction TransferMoney(decimal sum, string from, string to);
 
         /// <summary>
         /// Get range of transactions
         /// </summary>
         /// <param name="cardnumber"></param>
         /// <param name="from">from range</param>
-        /// <param name="to">to range</param>
-        IEnumerable<Transaction> GetTranasctions(string cardnumber, int from, int to);
+        IEnumerable<Transaction> GetTranasctions(string cardnumber, int from);
 
         /// <summary>
         /// Get current logged user

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Server.Data;
+using Server.Middlewares;
 using Server.Services;
 
 namespace Server
@@ -32,7 +33,8 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
+            app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseMvc();
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Infrastructure;
 using Server.Models;
@@ -16,6 +17,16 @@ namespace Server.Data
             user.OpenNewCard("to my lovely wife", Currency.USD, CardType.MASTERCARD);
 
             return user.Cards;
+        }
+
+        public static IEnumerable<Transaction> GenerateFakeTransactionstoCard(Card card)
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                card.AddTransaction(new Transaction(new Random().Next(10, 100), card));
+            }
+
+            return card.Transactions;
         }
     }
 }
