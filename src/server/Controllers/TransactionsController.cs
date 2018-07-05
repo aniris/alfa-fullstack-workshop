@@ -39,7 +39,7 @@ namespace Server.Controllers
                 throw new HttpStatusCodeException(400, "all fields must be filled");
             
             
-            return Json(_repository.TransferMoney(data.sum, data.from, data.to));
+            return Ok(Json(_repository.TransferMoney(data.sum, data.from, data.to)));
         }
         
         // DELETE api/transaction/5

@@ -45,7 +45,7 @@ namespace Server.Controllers
             if (!ModelState.IsValid || data == null)
                 throw new HttpStatusCodeException(400, "all fields must be filled");
             
-            return  Json(_repository.OpenNewCard(data.name, data.currency, data.type));
+            return  Ok(Json(_repository.OpenNewCard(data.name, data.currency, data.type)));
         }
 
         // DELETE api/cards/5
