@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Services;
@@ -8,60 +9,20 @@ using Server.Services;
 namespace Server.Models
 {
     /// <summary>
-    /// Card domain model
+    /// Card model
     /// </summary>
     public class Card
     {
-        private string _cardNumber;
-
-        private IList<Transaction> _transactions = new List<Transaction>();
-
-        private readonly ICardService cardService = new CardService();
-        private readonly IBusinessLogicService blService = new BusinessLogicService();
-
         /// <summary>
-        /// Create new Card with validation
+        /// Identificator
         /// </summary>
-        /// <param name="cardNumber">Card number</param>
-        /// <param name="cardName">Short card name</param>
-        /// <param name="cardType">cardType with enum</param>
-        /// <param name="currency">card currency</param>
-        /// <param name="dtOpenCard">Date of card opening</param>
-        /// <param name="validity">Number of years of validity</param>
-        public Card(string cardNumber, string cardName, CardType cardType,
-            Currency currency = Currency.RUR, DateTime? dtOpenCard = null, int validity = 3)
-        {
-            if (!cardService.CheckCardNumber(cardNumber))
-                throw new UserDataException("Incorrect cardNumber", cardNumber);
-
-            if (!cardService.CheckCardEmmiter(cardNumber))
-                throw new UserDataException("Wrong emitted cardNumber", cardNumber);
-
-            if (cardType == CardType.UNKNOWN)
-                throw new UserDataException("Wrong type card", cardType.ToString());
-
-            if (dtOpenCard == null)
-                dtOpenCard = DateTime.Today;
-
-            else if (dtOpenCard > DateTime.Today)
-                new UserDataException("You can't open card in future", dtOpenCard.Value.ToString("yyyy-MM-dd"));
-
-            if (validity <= 0 || validity > 5)
-                new UserDataException("Incorrect validaty. Must be [1-5] years", validity.ToString());
-
-            CardNumber = cardService.CreateNormalizeCardNumber(cardNumber);
-            CardName = cardName;
-            DTOpenCard = dtOpenCard.Value;
-            Validity = validity;
-            Currency = currency;
-            CardType = cardType;
-        }
+        public int Id { get; set; }
 
         /// <summary>
-        /// Card number. Set only from constructor.
+        /// Card number
         /// </summary>
         /// <returns><see langword="string"/> card number representation</returns>
-        public string CardNumber { get => _cardNumber; private set => _cardNumber = value; }
+        public string CardNumber { get; set; }
 
         /// <summary>
         /// Short name of the cards
@@ -72,37 +33,34 @@ namespace Server.Models
         /// <summary>
         /// Card <see cref="Currency"/>
         /// </summary>
-        public Currency Currency { get; }
+        public Currency Currency { get; set; }
 
         /// <summary>
         /// Card <see cref="CardType"/>
         /// </summary>
-        public CardType CardType { get; }
+        public CardType CardType { get; set; }
 
         /// <summary>
         /// DTOpenCard
         /// </summary>
-        public DateTime DTOpenCard { get; }
+        public DateTime DTOpenCard { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Count year's
         /// </summary>
-        public int Validity { get; }
+        public int ValidityYear { get; set; } = 3;
 
         /// <summary>
-        /// List of card transactions
+        /// Return all transaction of the card
         /// </summary>
-        /// <returns><see cref="IList"/> of Transactions</returns>
-        public IList<Transaction> Transactions => new ReadOnlyCollection<Transaction>(_transactions);
+        /// <typeparam name="Transaction"></typeparam>
+        /// <returns><see cref="List"/> of transactions</returns>
+        public IList<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         /// <summary>
-        /// This method add new transaction to list of card transaction
+        /// Link to User
         /// </summary>
-        /// <param name="transaction"></param>
-        public Transaction AddTransaction(Transaction transaction)
-        {
-            _transactions.Add(transaction);
-            return transaction;
-        }
+        /// <returns><see cref="User"/></returns>
+        public User User { get; set; }
     }
 }

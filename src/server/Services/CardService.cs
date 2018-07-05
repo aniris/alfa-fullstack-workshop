@@ -102,6 +102,13 @@ namespace Server.Services
             return resultNumbers.ToString();
         }
 
+        /// <summary>
+        /// Convert DateTime and years to Exp date "01/18"
+        /// </summary>
+        /// <param name="dt">dateTime opencard</param>
+        /// <param name="years">count of years</param>
+        public string GetExpDateFromDateTime(DateTime dt, int years) => dt.AddYears(years).ToString("MM/yy");
+
         #endregion
 
         #region Utils

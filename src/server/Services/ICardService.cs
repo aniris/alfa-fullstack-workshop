@@ -1,3 +1,4 @@
+using System;
 using Server.Infrastructure;
 
 namespace Server.Services
@@ -34,5 +35,12 @@ namespace Server.Services
         /// <param name="cardNumber">card number in any format</param>
         /// <returns>Digits of a card number </returns>
         string CreateNormalizeCardNumber(string cardNumber);
+
+        /// <summary>
+        /// Convert DateTime and years to Exp date "01/18"
+        /// </summary>
+        /// <param name="dt">dateTime opencard</param>
+        /// <param name="years">count of years</param>
+        string GetExpDateFromDateTime(DateTime dt, int years);
     }
 }

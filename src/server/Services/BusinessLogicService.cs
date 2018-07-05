@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Models;
+using Server.ViewModels;
 
 namespace Server.Services
 {
@@ -12,6 +14,13 @@ namespace Server.Services
     /// </summary>
     public class BusinessLogicService : IBusinessLogicService
     {
+        private readonly ICardService _cardService;
+
+        public BusinessLogicService(ICardService cardService)
+        {
+            _cardService = cardService;
+        }
+
         /// <summary>
         /// Convert currency from to
         /// </summary>
@@ -31,25 +40,18 @@ namespace Server.Services
         /// </summary>
         /// <param name="card">Card to</param>
         public void AddBonusOnOpen(Card card)
-        {
-            if (card == null)
-                throw new BusinessLogicException(TypeBusinessException.CARD, "Card is null", "Карта не найдена");
-
-            card.AddTransaction(new Transaction(10M, card));
-        }
+            => card.Transactions.Add(new Transaction
+            {
+                CardToNumber = card.CardNumber,
+                Sum = GetConvertSum(10M, Currency.RUR, card.Currency)
+            });
 
         /// <summary>
         /// Check Card expired or not
         /// </summary>
         /// <param name="card">Card for cheking</param>
         /// <returns><see langword="true"/> if card is active</returns>
-        public bool CheckCardActivity(Card card)
-        {
-            if (card == null)
-                throw new BusinessLogicException(TypeBusinessException.CARD, "Card is null", "Карта не найдена");
-
-            return !(card.DTOpenCard.AddYears(card.Validity) <= DateTime.Today);
-        }
+        public bool CheckCardActivity(Card card) => !(card.DTOpenCard.AddYears(card.ValidityYear) <= DateTime.Today);
 
         /// <summary>
         /// Get balance of the card
@@ -58,12 +60,20 @@ namespace Server.Services
         /// <returns><see langword="decimal"/> sum</returns>
         public decimal GetBalanceOfCard(Card card)
         {
-            if (card == null)
-                throw new BusinessLogicException(TypeBusinessException.CARD, "Card is null", "Карта не найдена");
-
-            var credit = card.Transactions.Where(x => x.CardToNumber == card.CardNumber).Sum(x => x.ToSum);
-            var debit = card.Transactions.Where(x => x.CardFromNumber == card.CardNumber).Sum(x => x.FromSum);
+            var credit = card.Transactions.Where(x => x.CardToNumber == card.CardNumber).Sum(x => x.Sum);
+            var debit = card.Transactions.Where(x => x.CardFromNumber == card.CardNumber).Sum(x => x.Sum);
             return credit - debit;
+        }
+
+        /// <summary>
+        /// Get balance of the card round to 2
+        /// </summary>
+        /// <param name="card">Card to calculaing</param>
+        /// <returns><see langword="decimal"/> sum</returns>
+        public decimal GetRoundBalanceOfCard(Card card)
+        {
+            var balance = GetBalanceOfCard(card);
+            return Math.Round(balance, 2, MidpointRounding.ToEven);
         }
 
         /// <summary>
@@ -142,6 +152,65 @@ namespace Server.Services
             ccnumber += checkdigit;
 
             return ccnumber;
+        }
+
+        /// <summary>
+        /// Method to validate transfer
+        /// </summary>
+        /// <param name="transaction">transaction DTO</param>
+        public void ValidateTransferDto(TransactionDto transaction)
+        {
+            if (!_cardService.CheckCardEmmiter(transaction.From))
+                throw new UserDataException("Card number is invalid", transaction.From);
+
+            if (!_cardService.CheckCardEmmiter(transaction.To))
+                throw new UserDataException("Card number is invalid", transaction.To);
+
+            if (transaction.Sum <= 0)
+                throw new UserDataException("Sum must be greated then 0", transaction.Sum.ToString());
+        }
+
+        /// <summary>
+        /// Mothod to validate opencard dto
+        /// </summary>
+        /// <param name="card">card DTO</param>
+        public void ValidateOpenCardDto(CardDto card)
+        {
+            if (card.Type <= 0 || card.Type > 4)
+                throw new UserDataException("Card type is invalid", card.Type.ToString());
+            if (card.Currency < 0 || card.Currency > 2)
+                throw new UserDataException("Currency is invalid", card.Currency.ToString());
+        }
+
+        /// <summary>
+        /// Validate cards and their balance
+        /// </summary>
+        /// <param name="from">card from</param>
+        /// <param name="to">card to</param>
+        /// <param name="sum">sum</param>
+        public void ValidateTransfer(Card from, Card to, decimal sum)
+        {
+            if (from.CardNumber == to.CardNumber)
+                throw new BusinessLogicException(TypeBusinessException.TRANSACTION,
+               "From card and to card is Equal", "Нельзя перевести на туже карту");
+
+            if (!CheckCardActivity(from) && !CheckCardActivity(to))
+                throw new BusinessLogicException(TypeBusinessException.CARD, "Card is expired", "Карта просрочена");
+
+            if (GetBalanceOfCard(from) < sum)
+                throw new BusinessLogicException(TypeBusinessException.CARD, "Balance of the card is low", "Нет денег на карте");
+        }
+
+        /// <summary>
+        /// Validate exist card by number or by name
+        /// </summary>
+        /// <param name="cards">cards</param>
+        /// <param name="shortCardName">name</param>
+        /// <param name="cardNumber">number</param>
+        public void ValidateCardExist(IEnumerable<Card> cards, string shortCardName, string cardNumber)
+        {
+            if (cards.Any(c => c.CardName == shortCardName || c.CardNumber == cardNumber))
+                throw new UserDataException("Card is already exist", shortCardName);
         }
     }
 }

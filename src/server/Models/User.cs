@@ -14,10 +14,6 @@ namespace Server.Models
     /// </summary>
     public class User
     {
-        private readonly IBusinessLogicService blService = new BusinessLogicService();
-
-        private IList<Card> _cards = new List<Card>();
-
         private MailAddress _mail;
 
         /// <summary>
@@ -31,6 +27,11 @@ namespace Server.Models
 
             UserName = userName;
         }
+
+        /// <summary>
+        /// Identificator
+        /// </summary>
+        public int Id { get; set; }
 
         /// <summary>
         /// Getter and setter username of the user for login
@@ -79,28 +80,6 @@ namespace Server.Models
         /// <summary>
         /// Getter user card list
         /// </summary>
-        public IList<Card> Cards => new ReadOnlyCollection<Card>(_cards);
-
-
-        /// <summary>
-        /// Added new card to list
-        /// </summary>
-        /// <param name="shortCardName"></param>
-        public Card OpenNewCard(string shortCardName, Currency currency, CardType cardType)
-        {
-            if (cardType == CardType.UNKNOWN)
-                throw new UserDataException("Wrong type card", cardType.ToString());
-
-            if (!String.IsNullOrWhiteSpace(shortCardName) && Cards.Any(x => x.CardName == shortCardName))
-                throw new UserDataException("Card is already exist", shortCardName);
-
-            var newCard = new Card(blService.GenerateNewCardNumber(cardType),
-                                    shortCardName, cardType, currency);
-
-            _cards.Add(newCard);
-            blService.AddBonusOnOpen(newCard);
-
-            return newCard;
-        }
+        public IList<Card> Cards { get; set; } = new List<Card>();
     }
 }

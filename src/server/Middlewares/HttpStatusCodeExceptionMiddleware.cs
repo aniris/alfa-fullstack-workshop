@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Server.Exceptions;
+using Microsoft.AspNetCore.Http;
 
 namespace Server.Middlewares
 {
@@ -19,12 +19,8 @@ namespace Server.Middlewares
             try
             {
                 await _next(context);
-                if (context.Response.StatusCode == 404)
-                {
-                    await context.Response.WriteAsync("404 Page not found");
-                }
             }
-            catch (HttpStatusCodeException ex)
+            catch (UserDataException ex)
             {
                 if (context.Response.HasStarted)
                 {
@@ -32,24 +28,14 @@ namespace Server.Middlewares
                 }
 
                 context.Response.Clear();
-                context.Response.StatusCode = ex.StatusCode;
-                await context.Response.WriteAsync($"{ex.StatusCode} - {ex.Message}");
+                context.Response.StatusCode = (int)ex.StatusCode;
+                await context.Response.WriteAsync(ex.Message);
                 return;
-            }
-            catch (UserDataException ex)
-            {
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("400 Server error - " + ex.Message);
-            }
-            catch (BusinessLogicException ex)
-            {
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("500 Server error");
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("500 Server error");
+                await context.Response.WriteAsync("500 Server error - " + ex.Message);
             }
         }
     }

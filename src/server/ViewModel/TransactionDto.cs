@@ -6,19 +6,14 @@ using Server.Services;
 namespace Server.Models
 {
     /// <summary>
-    /// Transaction model
+    /// Transaction DTO model
     /// </summary>
-    public class Transaction
+    public class TransactionDto
     {
-        /// <summary>
-        /// Identificator
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// Public Time of transaction
         /// </summary>
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime DateTime { get; set; }
 
         /// <summary>
         /// Sum in transaction
@@ -27,15 +22,18 @@ namespace Server.Models
         public decimal Sum { get; set; }
 
         /// <summary>
-        /// Link to valid card
+        /// Link to card
         /// </summary>
-        /// <returns><see cref="Card"/></returns>
-        public string CardFromNumber { get; set; }
+        public string From { get; set; }
 
         /// <summary>
-        /// Link to valid card
+        /// Link to card
         /// </summary>
-        /// <returns><see cref="Card"/></returns>
-        public string CardToNumber { get; set; }
+        public string To { get; set; }
+
+        /// <summary>
+        /// Flag that operation is credit - else debiot
+        /// </summary>
+        public bool Credit { get; set; }
     }
 }
