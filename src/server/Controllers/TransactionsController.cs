@@ -1,62 +1,9 @@
-<<<<<<< HEAD
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Server.Data;
-using Server.Exceptions;
-using Server.Infrastructure;
-using Server.Models;
-using Server.Services;
-
-namespace Server.Controllers
-{
-    [Route("api/[controller]")]
-    public class TransactionsController : Controller
-    {
-        private readonly IBankRepository _repository;
-
-        private readonly ICardService _cardService;
-
-        public TransactionsController(IBankRepository repository, ICardService cardService)
-        {
-            _repository = repository;
-            _cardService = cardService;
-        }
-        
-        // GET api/transactions/(card number)/?from=
-        [HttpGet("{cardNumber}")]
-        public IEnumerable<Transaction> Get([FromQuery(Name = "from")] int from, string cardNumber)
-        {
-            if (!_cardService.CheckCardEmmiter(cardNumber))
-                throw new UserDataException("Card number is invalid", cardNumber);
-            
-            return _repository.GetTranasctions(cardNumber, from);
-        }
-        
-        // POST api/transactions
-        [HttpPost]
-        public IActionResult Post([FromBody] TransactionFromData data)
-        {
-            if (!ModelState.IsValid || data == null)
-                throw new HttpStatusCodeException(400, "all fields must be filled");
-            
-            
-            return Ok(Json(_repository.TransferMoney(data.sum, data.from, data.to)));
-        }
-        
-        // DELETE api/transaction/5
-        [HttpDelete("{number}")]
-        public IActionResult Delete(string number) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-
-        //PUT api/transaction/
-        [HttpPut]
-        public IActionResult Put(object data) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-    }
-}
-=======
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data;
 using Server.Exceptions;
@@ -74,12 +21,15 @@ namespace Server.Controllers
         private readonly ICardService _cardService;
 
         private readonly IBusinessLogicService _businessLogicServer;
+        
+        private readonly IMapper _mapper;
 
-        public TransactionsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicServer)
+        public TransactionsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicServer, IMapper mapper)
         {
             _repository = repository;
             _cardService = cardService;
             _businessLogicServer = businessLogicServer;
+            _mapper = mapper;
         }
 
         // GET api/transactions/5334343434343?skip=...
@@ -94,14 +44,7 @@ namespace Server.Controllers
 
             var transactions = _repository.GetTranasctions(number, skip, 10);
 
-            return transactions.Select(transaction => new TransactionDto
-            {
-                DateTime = transaction.DateTime,
-                From = transaction.CardFromNumber,
-                To = transaction.CardToNumber,
-                Sum = transaction.Sum,
-                Credit = transaction.CardToNumber == _cardService.CreateNormalizeCardNumber(number)
-            });
+            return _mapper.Map<IEnumerable<Transaction>, IEnumerable<TransactionDto>> (transactions);
         }
 
         // POST api/transactions
@@ -114,14 +57,10 @@ namespace Server.Controllers
 
             var transaction = _repository.TransferMoney(value.Sum, value.From, value.To);
 
-            return Created($"/transactions/{_cardService.CreateNormalizeCardNumber(value.From)}", new TransactionDto
-            {
-                DateTime = transaction.DateTime,
-                From = transaction.CardFromNumber,
-                To = transaction.CardToNumber,
-                Sum = transaction.Sum,
-                Credit = transaction.CardToNumber == _cardService.CreateNormalizeCardNumber(value.From)
-            });
+            return Created(
+                $"/transactions/{_cardService.CreateNormalizeCardNumber(value.From)}",
+                _mapper.Map<Transaction, TransactionDto>(transaction)
+            );
         }
 
         // DELETE api/transactions
@@ -133,4 +72,3 @@ namespace Server.Controllers
         public IActionResult Put() => StatusCode(405);
     }
 }
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb

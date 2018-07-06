@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data;
 using Server.Exceptions;
@@ -19,13 +20,16 @@ namespace Server.Controllers
 
         private readonly ICardService _cardService;
 
-        private readonly IBusinessLogicService _businessLogicServer;
+        private readonly IBusinessLogicService _businessLogicService;
+        
+        private readonly IMapper _mapper;
 
-        public CardsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicServer)
+        public CardsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicService, IMapper mapper)
         {
             _repository = repository;
             _cardService = cardService;
-            _businessLogicServer = businessLogicServer;
+            _businessLogicService = businessLogicService;
+            _mapper = mapper;
         }
 
         // GET api/cards
@@ -33,15 +37,8 @@ namespace Server.Controllers
         public IEnumerable<CardDto> Get()
         {
             var cards = _repository.GetCards();
-            return cards.Select(card => new CardDto
-            {
-                Number = card.CardNumber,
-                Type = (int)card.CardType,
-                Name = card.CardName,
-                Currency = (int)card.Currency,
-                Exp = _cardService.GetExpDateFromDateTime(card.DTOpenCard, card.ValidityYear),
-                Balance = _businessLogicServer.GetRoundBalanceOfCard(card)
-            });
+
+            return _mapper.Map<IEnumerable<Card>, IEnumerable<CardDto>>(cards);
         }
 
         // GET api/cards/5334343434343...
@@ -49,66 +46,27 @@ namespace Server.Controllers
         public CardDto Get(string number)
         {
             if (!_cardService.CheckCardEmmiter(number))
-<<<<<<< HEAD
                 throw new HttpStatusCodeException(400, "card number is incorrect");
             
-            return _repository.GetCard(number);
-=======
-                throw new UserDataException("Card number is invalid", number);
-
             var card = _repository.GetCard(number);
 
-            return new CardDto
-            {
-                Number = card.CardNumber,
-                Type = (int)card.CardType,
-                Name = card.CardName,
-                Currency = (int)card.Currency,
-                Exp = _cardService.GetExpDateFromDateTime(card.DTOpenCard, card.ValidityYear),
-                Balance = _businessLogicServer.GetRoundBalanceOfCard(card)
-            };
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
+            return _mapper.Map<Card, CardDto>(card);
         }
 
         // POST api/cards
         [HttpPost]
-<<<<<<< HEAD
-        public IActionResult Post([FromBody] CardFromData data)
-        {
-            if (!ModelState.IsValid || data == null)
-                throw new HttpStatusCodeException(400, "all fields must be filled");
-            
-            return  Ok(Json(_repository.OpenNewCard(data.name, data.currency, data.type)));
-        }
-
-        // DELETE api/cards/5
-        [HttpDelete("{number}")]
-        public IActionResult Delete(string number) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-
-        //PUT api/cards/
-        [HttpPut]
-        public IActionResult Put(object data) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-=======
         public IActionResult Post([FromBody] CardDto value)
         {
             if (value == null) throw new UserDataException("Card data is null", null);
 
-            _businessLogicServer.ValidateOpenCardDto(value);
+            _businessLogicService.ValidateOpenCardDto(value);
 
             if (string.IsNullOrWhiteSpace(value.Name))
                 throw new UserDataException("Short name of the card is invalid", value.Name);
 
             var card = _repository.OpenNewCard(value.Name, (Currency)value.Currency, (CardType)value.Type);
 
-            return Created($"/api/cards/{card.CardNumber}", new CardDto
-            {
-                Number = card.CardNumber,
-                Type = (int)card.CardType,
-                Name = card.CardName,
-                Currency = (int)card.Currency,
-                Exp = _cardService.GetExpDateFromDateTime(card.DTOpenCard, card.ValidityYear),
-                Balance = _businessLogicServer.GetRoundBalanceOfCard(card)
-            });
+            return Created($"/api/cards/{card.CardNumber}", _mapper.Map<Card, CardDto>(card));
         }
 
         // DELETE api/cards
@@ -118,6 +76,5 @@ namespace Server.Controllers
         // PUT api/cards
         [HttpPut]
         public IActionResult Put() => StatusCode(405);
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
     }
 }
