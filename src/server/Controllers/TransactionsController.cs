@@ -44,7 +44,10 @@ namespace Server.Controllers
 
             var transactions = _repository.GetTranasctions(number, skip, 10);
 
-            return _mapper.Map<IEnumerable<Transaction>, IEnumerable<TransactionDto>> (transactions);
+            return _mapper.Map<IEnumerable<Transaction>, IEnumerable<TransactionDto>>(
+                transactions,
+                opts => opts.Items["number"] = number
+            );
         }
 
         // POST api/transactions
@@ -59,7 +62,10 @@ namespace Server.Controllers
 
             return Created(
                 $"/transactions/{_cardService.CreateNormalizeCardNumber(value.From)}",
-                _mapper.Map<Transaction, TransactionDto>(transaction)
+                _mapper.Map<Transaction, TransactionDto>(
+                    transaction,
+                    opts => opts.Items["number"] = value.From
+                )
             );
         }
 

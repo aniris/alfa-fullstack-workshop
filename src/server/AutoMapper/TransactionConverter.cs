@@ -18,14 +18,13 @@ namespace Server.AutoMapper
         
         public TransactionDto Convert(Transaction source, TransactionDto destination, ResolutionContext context)
         {
-
             return new TransactionDto
             {
                 DateTime = source.DateTime,
                 From = source.CardFromNumber,
                 To = source.CardToNumber,
                 Sum = source.Sum,
-                Credit = source.CardToNumber == _cardService.CreateNormalizeCardNumber(source.CardToNumber)
+                Credit = source.CardFromNumber == _cardService.CreateNormalizeCardNumber(context.Items["number"].ToString())
             };
         }
     }
