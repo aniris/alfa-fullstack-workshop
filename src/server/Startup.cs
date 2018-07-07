@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Server.Core;
 using Server.Data;
 using Server.Middlewares;
+using Server.Repository;
 using Server.Services;
 using Server.ViewModels;
 
@@ -32,11 +33,14 @@ namespace Server
         {
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IBusinessLogicService, BusinessLogicService>();
-            services.AddSingleton<IBankRepository, InMemoryBankRepository>();
+            services.AddScoped<UserService>();
+            services.AddSingleton<IBankRepository, DbBankRepository>();
             
             services.AddDbContext<SQLContext>(options =>
                             options.UseSqlite(Configuration.GetSection("connectionStrings").
                                 GetChildren().Where(x=>x.Key=="sqlite").FirstOrDefault().Value));
+
+            services.AddSingleton<UnitOfWork>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc();
