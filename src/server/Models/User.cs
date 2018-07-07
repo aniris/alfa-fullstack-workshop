@@ -1,11 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Mail;
-using Server.Exceptions;
-using Server.Infrastructure;
-using Server.Services;
 
 namespace Server.Models
 {
@@ -14,17 +9,12 @@ namespace Server.Models
     /// </summary>
     public class User
     {
-        private MailAddress _mail;
-
         /// <summary>
         /// Create new User
         /// </summary>
         /// <param name="userName">Login of the user</param>
         public User(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-                throw new UserDataException("username is null or empty", userName);
-
             UserName = userName;
         }
 
@@ -36,22 +26,7 @@ namespace Server.Models
         /// <summary>
         /// Getter and setter username of the user for login
         /// </summary>
-        public string UserName
-        {
-            get => _mail.ToString();
-
-            private set
-            {
-                try
-                {
-                    this._mail = new MailAddress(value);
-                }
-                catch (FormatException)
-                {
-                    throw new UserDataException("Email is invalid", value);
-                }
-            }
-        }
+        public string UserName { get; set; }
 
         /// <summary>
         /// Getter and setter Surname of the user
