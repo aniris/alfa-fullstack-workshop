@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Models;
 using Server.Services;
@@ -10,13 +11,25 @@ namespace Server.Data
     public class FakeDataGenerator
     {
         private readonly IBusinessLogicService _businessLogicService;
+        private readonly UserService _userService;
 
-        public FakeDataGenerator(IBusinessLogicService businessLogicService)
+        public FakeDataGenerator(IBusinessLogicService businessLogicService, UserService userService)
         {
             _businessLogicService = businessLogicService;
+            _userService = userService;
         }
 
-        public static User GenerateFakeUser() => new User("admin@admin.net");
+        public User GenerateFakeUser()
+        {
+            var userName = "admin@admin.net";
+
+            if (_userService.CheckUserName(userName))
+            {
+                return new User(userName);
+            }
+            
+            throw new UserDataException("User name is incorrect", userName);
+        }
 
         public Card GenerateFakeCard(CardDto card) => new Card
         {

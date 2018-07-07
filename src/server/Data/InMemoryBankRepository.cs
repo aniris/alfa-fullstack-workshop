@@ -18,14 +18,17 @@ namespace Server.Data
 
         private readonly ICardService _cardService;
 
+        private readonly FakeDataGenerator _fakeDataGenerator;
+        
         private readonly IBusinessLogicService _businessLogicService;
 
-        public InMemoryBankRepository(ICardService cardService, IBusinessLogicService businessLogicService)
+        public InMemoryBankRepository(ICardService cardService, UserService userService, IBusinessLogicService businessLogicService)
         {
             _cardService = cardService;
             _businessLogicService = businessLogicService;
+            _fakeDataGenerator = new FakeDataGenerator(_businessLogicService, userService);
 
-            currentUser = FakeDataGenerator.GenerateFakeUser();
+            currentUser = _fakeDataGenerator.GenerateFakeUser();
             ProducedFakeData();
         }
 
@@ -33,7 +36,7 @@ namespace Server.Data
         {
             // fakes generate
             var cards = (List<Card>)GetCards();
-            cards.AddRange(new FakeDataGenerator(_businessLogicService).GenerateFakeCards());
+            cards.AddRange(_fakeDataGenerator.GenerateFakeCards());
         }
 
         /// <summary>

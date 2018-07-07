@@ -15,7 +15,6 @@ namespace Server.Data
 
         private readonly ICardService _cardService;
         private readonly IBusinessLogicService _businessLogicService;
-        private readonly UserService _userService;
 
         private readonly FakeDataGenerator _fakeDataGenerator;
         
@@ -26,8 +25,8 @@ namespace Server.Data
             _cardService = cardService;
             _businessLogicService = businessLogicService;
             _unitOfWork = unitOfWork;
-            _userService = userService;
-            _fakeDataGenerator = new FakeDataGenerator(_businessLogicService, _userService);
+
+            _fakeDataGenerator = new FakeDataGenerator(_businessLogicService, userService);
            
             _currentUser = _fakeDataGenerator.GenerateFakeUser();
 
