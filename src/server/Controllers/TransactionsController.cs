@@ -5,11 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Server.AutoMapper;
 using Server.Data;
 using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Models;
 using Server.Services;
+using Server.ViewModels;
 
 namespace Server.Controllers
 {
@@ -20,16 +22,19 @@ namespace Server.Controllers
 
         private readonly ICardService _cardService;
 
-        private readonly IBusinessLogicService _businessLogicServer;
+        private readonly IBusinessLogicService _businessLogicService;
         
         private readonly IMapper _mapper;
 
-        public TransactionsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicServer, IMapper mapper)
+        public TransactionsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicService)
         {
             _repository = repository;
             _cardService = cardService;
-            _businessLogicServer = businessLogicServer;
-            _mapper = mapper;
+            _businessLogicService = businessLogicService;
+            
+            var transactionConverter = new TransactionConverter(_businessLogicService, _cardService);
+            var confMap = new MapperConfiguration(cfg => cfg.CreateMap<Transaction, TransactionDto>().ConvertUsing(transactionConverter));
+            _mapper = new Mapper(confMap);
         }
 
         // GET api/transactions/5334343434343?skip=...
@@ -56,7 +61,7 @@ namespace Server.Controllers
         {
             if (value == null) throw new UserDataException("transaction data is null", null);
 
-            _businessLogicServer.ValidateTransferDto(value);
+            _businessLogicService.ValidateTransferDto(value);
 
             var transaction = _repository.TransferMoney(value.Sum, value.From, value.To);
 

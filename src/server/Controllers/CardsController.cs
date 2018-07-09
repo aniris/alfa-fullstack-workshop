@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Server.AutoMapper;
 using Server.Data;
 using Server.Exceptions;
 using Server.Infrastructure;
@@ -24,12 +25,15 @@ namespace Server.Controllers
         
         private readonly IMapper _mapper;
 
-        public CardsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicService, IMapper mapper)
+        public CardsController(IBankRepository repository, ICardService cardService, IBusinessLogicService businessLogicService)
         {
             _repository = repository;
             _cardService = cardService;
             _businessLogicService = businessLogicService;
-            _mapper = mapper;
+            
+            var cardConverter = new CardConverter(_businessLogicService, _cardService);
+            var confMap = new MapperConfiguration(cfg => cfg.CreateMap<Card, CardDto>().ConvertUsing(cardConverter));
+            _mapper = new Mapper(confMap);
         }
 
         // GET api/cards

@@ -41,8 +41,6 @@ namespace Server
                                 GetChildren().Where(x=>x.Key=="sqlite").FirstOrDefault().Value));
 
             services.AddSingleton<UnitOfWork>();
-
-            services.AddAutoMapper(typeof(Startup));
             services.AddMvc();
         }
 
