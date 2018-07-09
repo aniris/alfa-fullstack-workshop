@@ -1,12 +1,13 @@
 ﻿using Server.Core;
+using Server.Models;
 
 namespace Server.Repository
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
-        private CardRepository _cardRepository;
-        private TransactionRepository _transactionRepository;
-        private UserRepository _userRepository;
+        private IRepository<Card> _cardRepository;
+        private IRepository<Transaction> _transactionRepository;
+        private IRepository<User> _userRepository;
         private readonly SQLContext _context;
 
         public UnitOfWork(SQLContext context)
@@ -14,7 +15,7 @@ namespace Server.Repository
             _context = context;
         }
 
-        public CardRepository Cards
+        public IRepository<Card> Cards
         {
             get
             {
@@ -24,7 +25,7 @@ namespace Server.Repository
             }
         }
         
-        public TransactionRepository Transactions
+        public IRepository<Transaction> Transactions
         {
             get
             {
@@ -34,7 +35,7 @@ namespace Server.Repository
             }
         }
         
-        public UserRepository Users
+        public IRepository<User> Users
         {
             get
             {

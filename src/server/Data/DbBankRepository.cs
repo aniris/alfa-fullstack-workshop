@@ -18,9 +18,9 @@ namespace Server.Data
 
         private readonly FakeDataGenerator _fakeDataGenerator;
         
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DbBankRepository(ICardService cardService, IBusinessLogicService businessLogicService, UserService userService, UnitOfWork unitOfWork)
+        public DbBankRepository(ICardService cardService, IBusinessLogicService businessLogicService, UserService userService, IUnitOfWork unitOfWork)
         {
             _cardService = cardService;
             _businessLogicService = businessLogicService;
@@ -30,13 +30,13 @@ namespace Server.Data
            
             _currentUser = _fakeDataGenerator.GenerateFakeUser();
 
-            if (_unitOfWork.Users.GetByUserName(_currentUser.UserName) == null)
+            if (_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserName == _currentUser.UserName) == null)
             {
                 _unitOfWork.Users.Create(_currentUser);
                 _unitOfWork.Users.Save();
             }
 
-            _currentUser = _unitOfWork.Users.GetByUserName(_currentUser.UserName);
+            _currentUser = _unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserName == _currentUser.UserName);
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace Server
                             options.UseSqlite(Configuration.GetSection("connectionStrings").
                                 GetChildren().Where(x=>x.Key=="sqlite").FirstOrDefault().Value));
 
-            services.AddSingleton<UnitOfWork>();
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddMvc();
         }
 
