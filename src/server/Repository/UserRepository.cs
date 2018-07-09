@@ -17,18 +17,12 @@ namespace Server.Repository
         
         public IEnumerable<User> GetAll()
         {
-            return (IEnumerable<User>)_context.Users.ToList();
+            return (IEnumerable<User>)_context.Users.Include(u => u.Cards).ThenInclude(c => c.Transactions).ToList();
         }
 
         public User GetById(int id)
         {
-            return _context.Users.FirstOrDefault(c => c.Id == id);
-        }
-
-        public User GetByUserName(string userName)
-        {
-            var user = _context.Users.Include(u => u.Cards).ThenInclude(c => c.Transactions).FirstOrDefault(u => u.UserName == userName);
-            return user;
+            return _context.Users.Include(u => u.Cards).ThenInclude(c => c.Transactions).FirstOrDefault(c => c.Id == id);
         }
 
         public void Create(User user)
