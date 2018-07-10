@@ -1,42 +1,42 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Models;
+using Server.Repository;
 using Server.Services;
 
 namespace Server.Data
 {
-    /// <summary>
-    /// Base implementation for onMemory Storage
-    /// </summary>
-    public class InMemoryBankRepository : IBankRepository
+    public class DbBankRepository : IBankRepository
     {
-        private readonly User currentUser;
+        private readonly User _currentUser;
 
         private readonly ICardService _cardService;
+        private readonly IBusinessLogicService _businessLogicService;
 
         private readonly FakeDataGenerator _fakeDataGenerator;
         
-        private readonly IBusinessLogicService _businessLogicService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public InMemoryBankRepository(ICardService cardService, UserService userService, IBusinessLogicService businessLogicService)
+        public DbBankRepository(ICardService cardService, IBusinessLogicService businessLogicService, UserService userService, IUnitOfWork unitOfWork)
         {
             _cardService = cardService;
             _businessLogicService = businessLogicService;
+            _unitOfWork = unitOfWork;
+
             _fakeDataGenerator = new FakeDataGenerator(_businessLogicService, userService);
+           
+            _currentUser = _fakeDataGenerator.GenerateFakeUser();
 
-            currentUser = _fakeDataGenerator.GenerateFakeUser();
-            ProducedFakeData();
-        }
+            if (_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserName == _currentUser.UserName) == null)
+            {
+                _unitOfWork.Users.Create(_currentUser);
+                _unitOfWork.Users.Save();
+            }
 
-        private void ProducedFakeData()
-        {
-            // fakes generate
-            var cards = (List<Card>)GetCards();
-            cards.AddRange(_fakeDataGenerator.GenerateFakeCards());
+            _currentUser = _unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserName == _currentUser.UserName);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Server.Data
         /// Get current logged user
         /// </summary>
         public User GetCurrentUser()
-            => currentUser != null ? currentUser :
+            => _currentUser != null ? _currentUser :
                 throw new BusinessLogicException(TypeBusinessException.USER, "User is null");
 
         /// <summary>
@@ -107,7 +107,10 @@ namespace Server.Data
             };
 
             allCards.Add(newCard);
+
             _businessLogicService.AddBonusOnOpen(newCard);
+            
+            _unitOfWork.Cards.Save();
 
             return newCard;
         }
@@ -142,6 +145,8 @@ namespace Server.Data
 
             cardFrom.Transactions.Add(fromTransaction);
             cardTo.Transactions.Add(toTransaction);
+            
+            _unitOfWork.Cards.Save();
 
             return fromTransaction;
         }

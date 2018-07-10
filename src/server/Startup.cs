@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,9 @@ using Microsoft.Extensions.Options;
 using Server.Core;
 using Server.Data;
 using Server.Middlewares;
+using Server.Repository;
 using Server.Services;
+using Server.ViewModels;
 
 namespace Server
 {
@@ -30,12 +33,14 @@ namespace Server
         {
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<IBusinessLogicService, BusinessLogicService>();
-            services.AddSingleton<IBankRepository, InMemoryBankRepository>();
-
+            services.AddScoped<UserService>();
+            services.AddSingleton<IBankRepository, DbBankRepository>();
+            
             services.AddDbContext<SQLContext>(options =>
                             options.UseSqlite(Configuration.GetSection("connectionStrings").
                                 GetChildren().Where(x=>x.Key=="sqlite").FirstOrDefault().Value));
 
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddMvc();
         }
 
@@ -46,11 +51,7 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-<<<<<<< HEAD
             
-=======
-
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
             app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseMvc();
         }
