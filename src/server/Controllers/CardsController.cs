@@ -40,7 +40,7 @@ namespace Server.Controllers
                 Name = card.CardName,
                 Currency = (int)card.Currency,
                 Exp = _cardService.GetExpDateFromDateTime(card.DTOpenCard, card.ValidityYear),
-                Balance = _businessLogicServer.GetRoundBalanceOfCard(card)
+                Balance = null
             });
         }
 

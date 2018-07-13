@@ -39,12 +39,17 @@ namespace Server.Services
         /// Add bonus o new card
         /// </summary>
         /// <param name="card">Card to</param>
-        public void AddBonusOnOpen(Card card)
-            => card.Transactions.Add(new Transaction
+        public Transaction AddBonusOnOpen(Card card)
+        {
+            var transaction = new Transaction
             {
+                Card = card,
                 CardToNumber = card.CardNumber,
                 Sum = GetConvertSum(10M, Currency.RUR, card.Currency)
-            });
+            };
+            card.Transactions.Add(transaction);
+            return transaction;
+        }
 
         /// <summary>
         /// Check Card expired or not

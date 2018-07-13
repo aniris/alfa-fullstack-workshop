@@ -39,21 +39,25 @@ namespace Server.Data
             var transactions = new List<Transaction>
             {
                 new Transaction{
+                    Card = card,
                     CardFromNumber = card.CardNumber,
                     CardToNumber = "4083969259636239",
                     Sum = 10
                 },
                 new Transaction{
+                    Card = card,
                     CardFromNumber = card.CardNumber,
                     CardToNumber = "4083969259636239",
                     Sum = 10
                 },
                 new Transaction{
+                    Card = card,
                     CardFromNumber = card.CardNumber,
                     CardToNumber = "4083969259636239",
                     Sum = 10
                 },
                 new Transaction{
+                    Card = card,
                     CardFromNumber = card.CardNumber,
                     CardToNumber = "4083969259636239",
                     Sum = 10

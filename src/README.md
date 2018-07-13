@@ -1,1 +1,1 @@
-# this is folder for src projects
+# this is folder for src of your project

@@ -1,1 +1,1 @@
-# this is folder for clents src projects
+# this is folder for UI client src projects

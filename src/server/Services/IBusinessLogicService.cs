@@ -30,7 +30,7 @@ namespace Server.Services
         /// Add bonus o new card
         /// </summary>
         /// <param name="card">Card to</param>
-        void AddBonusOnOpen(Card card);
+        Transaction AddBonusOnOpen(Card card);
 
         /// <summary>
         /// Check Card expired or not
