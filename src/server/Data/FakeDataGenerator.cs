@@ -97,15 +97,5 @@ namespace Server.Data
 
             return cards;
         }
-
-        public static IEnumerable<Transaction> GenerateFakeTransactionstoCard(Card card)
-        {
-            for (int i = 0; i < 20; i++)
-            {
-                card.AddTransaction(new Transaction(new Random().Next(10, 100), card));
-            }
-
-            return card.Transactions;
-        }
     }
 }

@@ -50,11 +50,6 @@ namespace Server
             {
                 app.UseDeveloperExceptionPage();
             }
-<<<<<<< HEAD
-            
-=======
-
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
             app.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
             app.UseMvc();
         }

@@ -49,11 +49,6 @@ namespace Server.Controllers
         public CardDto Get(string number)
         {
             if (!_cardService.CheckCardEmmiter(number))
-<<<<<<< HEAD
-                throw new HttpStatusCodeException(400, "card number is incorrect");
-            
-            return _repository.GetCard(number);
-=======
                 throw new UserDataException("Card number is invalid", number);
 
             var card = _repository.GetCard(number);
@@ -67,28 +62,10 @@ namespace Server.Controllers
                 Exp = _cardService.GetExpDateFromDateTime(card.DTOpenCard, card.ValidityYear),
                 Balance = _businessLogicServer.GetRoundBalanceOfCard(card)
             };
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
         }
 
         // POST api/cards
         [HttpPost]
-<<<<<<< HEAD
-        public IActionResult Post([FromBody] CardFromData data)
-        {
-            if (!ModelState.IsValid || data == null)
-                throw new HttpStatusCodeException(400, "all fields must be filled");
-            
-            return  Ok(Json(_repository.OpenNewCard(data.name, data.currency, data.type)));
-        }
-
-        // DELETE api/cards/5
-        [HttpDelete("{number}")]
-        public IActionResult Delete(string number) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-
-        //PUT api/cards/
-        [HttpPut]
-        public IActionResult Put(object data) => throw new HttpStatusCodeException(405, "Method Not Allowed");
-=======
         public IActionResult Post([FromBody] CardDto value)
         {
             if (value == null) throw new UserDataException("Card data is null", null);
@@ -118,6 +95,5 @@ namespace Server.Controllers
         // PUT api/cards
         [HttpPut]
         public IActionResult Put() => StatusCode(405);
->>>>>>> 016c4fa60f2f201a69d747c766956d5b1d7404fb
     }
 }
