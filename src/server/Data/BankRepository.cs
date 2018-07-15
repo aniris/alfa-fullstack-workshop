@@ -52,7 +52,7 @@ namespace Server.Data
         {
             var card = GetCard(cardnumber);
 
-            var transactions = card.Transactions.Skip(skip).Take(take);
+            var transactions = card.Transactions.OrderByDescending(x => x.DateTime).Skip(skip).Take(take);
 
             return transactions != null ? transactions : new List<Transaction>();
         }
