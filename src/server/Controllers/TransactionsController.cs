@@ -45,7 +45,7 @@ namespace Server.Controllers
                 From = transaction.CardFromNumber,
                 To = transaction.CardToNumber,
                 Sum = transaction.Sum,
-                Credit = transaction.CardToNumber == _cardService.CreateNormalizeCardNumber(number)
+                Credit = transaction.CardToNumber != _cardService.CreateNormalizeCardNumber(number)
             });
         }
 
@@ -65,7 +65,7 @@ namespace Server.Controllers
                 From = transaction.CardFromNumber,
                 To = transaction.CardToNumber,
                 Sum = transaction.Sum,
-                Credit = transaction.CardToNumber == _cardService.CreateNormalizeCardNumber(value.From)
+                Credit = transaction.CardToNumber != _cardService.CreateNormalizeCardNumber(value.From)
             });
         }
 
