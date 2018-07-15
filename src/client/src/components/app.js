@@ -21,21 +21,19 @@ body {
 `;
 
 const Wallet = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: 300px auto;
   min-height: 863px;
   background-color: #fcfcfc;
   width: 100%;
   margin: 0px auto;
   box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.15);
-  @media (min-width: 1500px) {
-    /* вот когда он больше сильно его разматывает по краям, не должно этого быть */
-    width: 1370px;
+  @media only screen and (max-width: 720px) {
+    grid-template-columns: 1fr;
   }
-  min-width: 1280px;
 `;
 
 const CardPane = styled.div`
-  flex-grow: 1;
 `;
 
 export default _ => (

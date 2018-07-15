@@ -7,8 +7,7 @@ import PaginationNext from "./pagination_next";
 const PaginationLayout = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 620px;
-  margin: 0 15px;
+  margin: 0;
 `;
 
 class Pagination extends Component {

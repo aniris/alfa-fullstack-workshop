@@ -15,6 +15,10 @@ const HeaderLayout = styled.header`
   padding: 20px 30px;
   box-sizing: border-box;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap;
+  @media only screen and (max-width: 900px) {
+    height: auto;
+  }
 `;
 
 const Balance = styled(Title)`

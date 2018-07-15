@@ -24,7 +24,7 @@ const separateByDates = (transactions, activeCard) => {
   });
 
   return sortedData.reduce((result, item) => {
-    const { from, to, dateTime, sum } = item;
+    const { from, to, dateTime, sum, credit } = item;
 
     const key = moment(dateTime).format("L");
 
@@ -45,7 +45,8 @@ const separateByDates = (transactions, activeCard) => {
         from,
         to
       }),
-      sum
+      sum,
+      credit
     });
 
     return result;

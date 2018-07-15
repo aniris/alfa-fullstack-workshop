@@ -12,10 +12,20 @@ import { getActiveCard, isExpiredCard } from "../../selectors/cards";
 import { getTransactionsByDays } from "../../selectors/transactions";
 
 const Workspace = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 1200px;
+  display: grid;
+  max-width: 1080px;
   padding: 15px;
+  grid-template-columns: 1fr auto;
+  grid-gap: 20px;
+  margin: 0 auto;
+  @media only screen and (max-width: 1300px) {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+    padding: 15px 5px;
+  }
+  @media only screen and (max-width: 600px) {
+    max-width: 100vw;
+  }
 `;
 
 class Home extends Component {
@@ -33,12 +43,14 @@ class Home extends Component {
               ❌ Срок действия карты истёк
             </h1>
           ) : null}
-          <Pagination />
-          <History
-            transactions={transactions}
-            activeCard={activeCard}
-            isLoading={transactionsIsLoading}
-          />
+          <div>
+            <Pagination />
+            <History
+              transactions={transactions}
+              activeCard={activeCard}
+              isLoading={transactionsIsLoading}
+            />
+          </div>
           <Payment />
         </Workspace>
       );

@@ -5,13 +5,16 @@ import moment from "moment";
 import Island from "../misc/island";
 
 const HistoryLayout = styled(Island)`
-  width: 620px;
+  margin: 15px 0;
   max-height: 622px;
   overflow-y: scroll;
   padding: 0;
   background-color: rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  @media only screen and (max-width: 600px) {
+    max-width: 100vw;
+  }
 `;
 
 const HistoryTitle = styled.div`
@@ -27,6 +30,7 @@ const HistoryItem = styled.div`
   justify-content: space-around;
   align-items: center;
   height: 74px;
+  width: 620px;
   min-height: 74px;
   font-size: 15px;
   font-weight: bold;
@@ -41,6 +45,17 @@ const HistoryItem = styled.div`
   }
 
   color: ${({ isInvalid }) => (isInvalid ? "#F44336" : "#000")};
+  
+  @media only screen and (max-width: 960px) {
+    flex-wrap: wrap;
+    padding: 10px;
+    width: auto;
+   }
+   @media only screen and (max-width: 906px) {
+     height: 100px;
+     min-height: 100px;
+     justify-content: space-around;
+   }
 `;
 
 const HistoryItemIcon = styled.div`
@@ -57,17 +72,24 @@ const HistoryItemTitle = styled.div`
   width: 360px;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-left: 10px; 
+   @media only screen and (max-width: 906px) {
+    order: 5;
+   }
 `;
 
 const HistoryItemTime = styled.div`
   width: 50px;
+  @media only screen and (max-width: 906px) {
+    margin-left: 10px;
+  }
 `;
 
 const HistoryItemSum = styled.div`
   width: 72px;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${({ color }) => color};
+  color: ${({ credit }) => (credit ? "red" : "green")};
 `;
 
 const History = ({ transactions, activeCard, isLoading }) => {
@@ -116,7 +138,7 @@ const History = ({ transactions, activeCard, isLoading }) => {
           <HistoryItemIcon bankSmLogoUrl={activeCard.theme.bankSmLogoUrl} />
           <HistoryItemTitle>{item.title}</HistoryItemTitle>
           <HistoryItemTime>{item.hhmm}</HistoryItemTime>
-          <HistoryItemSum>
+          <HistoryItemSum credit={item.credit}>
             {`${Number(item.sum.toFixed(2))} ${activeCard.currencySign}`}
           </HistoryItemSum>
         </HistoryItem>

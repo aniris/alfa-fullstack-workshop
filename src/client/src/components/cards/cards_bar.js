@@ -16,11 +16,24 @@ const Layout = styled.div`
   position: relative;
   background-color: #242424;
   padding: 20px;
+  @media only screen and (max-width: 720px) {
+    margin: 0 auto;
+    width: 100%;
+  }
 `;
 
 const CardsList = styled.div`
   flex: 1;
   font-size: 15px;
+  @media only screen and (max-width: 720px) {
+    display: grid;
+    grid-gap: 0 20px;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 auto;
+  }
+  @media only screen and (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Footer = styled.footer`

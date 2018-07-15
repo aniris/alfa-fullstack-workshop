@@ -13,12 +13,14 @@ const WithdrawTitle = styled(Title)`
 `;
 
 const WithdrawLayout = styled(Island)`
-  margin: 0px;
-  width: 440px;
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
+  max-width: 620px;
+  @media only screen and (max-width: 600px) {
+    max-width: 100vw;
+  }
 `;
 
 const InputField = styled.div`
