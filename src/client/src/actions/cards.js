@@ -117,6 +117,10 @@ export const changeActiveCard = number => (dispatch, getState) => {
     type: action.ACTIVE_CARD_CHANGED,
     payload: number
   });
+
+  dispatch({
+    type: action.PAGINATION_RESET
+  });
   dispatch(fetchCard(number));
   dispatch(fetchTransactions(number));
 };

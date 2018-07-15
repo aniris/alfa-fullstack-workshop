@@ -5,6 +5,7 @@ import styled from "emotion/react";
 
 import History from "./history";
 import Payment from "../payment/payment";
+import Pagination from "../pagination/pagination";
 
 import { fetchCards } from "../../actions/cards";
 import { getActiveCard, isExpiredCard } from "../../selectors/cards";
@@ -32,6 +33,7 @@ class Home extends Component {
               ❌ Срок действия карты истёк
             </h1>
           ) : null}
+          <Pagination />
           <History
             transactions={transactions}
             activeCard={activeCard}
