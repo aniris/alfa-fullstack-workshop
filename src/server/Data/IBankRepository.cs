@@ -21,10 +21,13 @@ namespace Server.Data
         Card GetCard(string cardNumber);
 
         /// <summary>
-        /// OpenNewCard
+        /// Open new card for current user
         /// </summary>
-        /// <param name="cardType">type of the cards</param>
-        void OpenNewCard(CardType cardType);
+        /// <param name="shortCardName"></param>
+        /// <param name="currency"></param>
+        /// <param name="cardType"></param>
+        /// <returns>new <see cref="Card"/> object</returns>
+        Card OpenNewCard(string shortCardName, Currency currency, CardType cardType);
 
         /// <summary>
         /// Transfer money
@@ -32,15 +35,16 @@ namespace Server.Data
         /// <param name="sum">sum of operation</param>
         /// <param name="from">card number</param>
         /// <param name="to">card number</param>
-        void TransferMoney(decimal sum, string from, string to);
+        /// <returns>new <see cref="Transaction"/> object</returns>
+        Transaction TransferMoney(decimal sum, string from, string to);
 
         /// <summary>
         /// Get range of transactions
         /// </summary>
         /// <param name="cardnumber"></param>
-        /// <param name="from">from range</param>
-        /// <param name="to">to range</param>
-        IEnumerable<Transaction> GetTranasctions(string cardnumber, int from, int to);
+        /// <param name="skip">how much to skip</param>
+        /// <param name="take">how much to take</param>
+        IEnumerable<Transaction> GetTranasctions(string cardnumber, int skip, int take);
 
         /// <summary>
         /// Get current logged user

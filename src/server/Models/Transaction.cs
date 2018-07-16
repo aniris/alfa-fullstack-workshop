@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Server.Exceptions;
 using Server.Infrastructure;
 using Server.Services;
@@ -6,102 +7,46 @@ using Server.Services;
 namespace Server.Models
 {
     /// <summary>
-    /// Transaction domain model
+    /// Transaction model
     /// </summary>
     public class Transaction
     {
         /// <summary>
+        /// Identificator
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
+
+        /// <summary>
         /// Public Time of transaction
         /// </summary>
-        public DateTime DateTime { get; } = DateTime.Now;
+        public DateTime DateTime { get; set; } = DateTime.Now;
 
         /// <summary>
-        /// Source Sum in transaction
+        /// Sum in transaction
         /// </summary>
         /// <returns><see langword="decimal"/>representation of the sum transaction</returns>
-        public decimal FromSum { get; }
-
-        /// <summary>
-        /// Destination Sum in transaction
-        /// </summary>
-        /// <returns><see langword="decimal"/>representation of the sum transaction</returns>
-        public decimal ToSum { get; }
+        [Required]
+        public decimal Sum { get; set; }
 
         /// <summary>
         /// Link to valid card
         /// </summary>
         /// <returns><see cref="Card"/></returns>
-        public string CardFromNumber { get; }
+        public string CardFromNumber { get; set; }
 
         /// <summary>
         /// Link to valid card
         /// </summary>
         /// <returns><see cref="Card"/></returns>
-        public string CardToNumber { get; }
-
-        private readonly IBusinessLogicService blService = new BusinessLogicService();
-
-        /// <summary>
-        /// Create new transaction with validation
-        /// </summary>
-        /// <param name="sum">Sum of the transaction</param>
-        /// <param name="from">Link card from</param>
-        /// <param name="to">Link card to</param>
-        public Transaction(decimal sum, Card from, Card to)
-        {
-            if (from == null)
-                throw new BusinessLogicException(TypeBusinessException.TRANSACTION,
-                "From card is null", "Не найдена карта с которой совершается перевод");
-
-            if (to == null)
-                throw new BusinessLogicException(TypeBusinessException.TRANSACTION,
-                "To card is null", "Не найдена карта на которую совершается перевод");
-
-            if (from.CardNumber == to.CardNumber)
-                throw new BusinessLogicException(TypeBusinessException.TRANSACTION,
-               "From card and to card is Equal", "Нельзя перевести на туже карту");
-
-            if (sum <= 0)
-                throw new UserDataException("Transaction need more then 0", $"from {from.CardName} to {to.CardName}");
-
-            if (!blService.CheckCardActivity(from))
-                throw new BusinessLogicException(TypeBusinessException.CARD,
-                "Card is expired", $"Карта {from.CardNumber } просрочена");
-
-            if (!blService.CheckCardActivity(to))
-                throw new BusinessLogicException(TypeBusinessException.CARD,
-                "Card is expired", $"Карта {to.CardNumber } просрочена");
-
-            if (blService.GetBalanceOfCard(from) < sum)
-                throw new BusinessLogicException(TypeBusinessException.CARD,
-                "No money", $" Недостаточно средств на карте {from.CardNumber }");
-
-            CardFromNumber = from.CardNumber;
-            CardToNumber = to.CardNumber;
-            FromSum = sum;
-            ToSum = blService.GetConvertSum(sum, from.Currency, to.Currency);
-        }
+        [Required]
+        public string CardToNumber { get; set; }
 
         /// <summary>
-        /// Create new Transactions
+        /// Link to card
         /// </summary>
-        /// <param name="sum">Sum of the transaction</param>
-        /// <param name="to">Link card to</param>
-        public Transaction(decimal sum, Card to)
-        {
-            if (to == null)
-                throw new BusinessLogicException(TypeBusinessException.TRANSACTION, "To card is null",
-                "Не найдена карта на которую совершается перевод");
-
-            if (sum <= 0)
-                throw new UserDataException("Sum of the transaction need more then 0", $"Add to {to.CardName}");
-
-            if (!blService.CheckCardActivity(to))
-                throw new BusinessLogicException(TypeBusinessException.CARD,
-                "Card is expired", $"Карта {to.CardNumber } просрочена");
-
-            CardToNumber = to.CardNumber;
-            ToSum = blService.GetConvertSum(sum, Currency.RUR, to.Currency);
-        }
+        /// <value></value>
+        [Required]
+        public Card Card { get; set; }
     }
 }
